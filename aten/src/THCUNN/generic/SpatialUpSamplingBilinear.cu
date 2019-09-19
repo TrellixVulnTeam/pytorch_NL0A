@@ -58,8 +58,8 @@ void THNN_(SpatialUpSamplingBilinear_updateOutput)(
   const accreal rheight = linear_upsampling_compute_scale<accreal>(inputHeight, outputHeight, align_corners);
   const accreal rwidth = linear_upsampling_compute_scale<accreal>(inputWidth, outputWidth, align_corners);
   const int num_kernels = outputHeight * outputWidth;
-  const int num_threads =
-    THCState_getCurrentDeviceProperties(state)->maxThreadsPerBlock;
+  const int num_threads = 512;
+    // THCState_getCurrentDeviceProperties(state)->maxThreadsPerBlock;
   cudaStream_t stream = THCState_getCurrentStream(state);
   caffe_gpu_interp2_kernel<real, accreal> <<<THCCeilDiv(num_kernels, num_threads), num_threads ,
    0 , stream>>>(num_kernels, rheight, rwidth, align_corners, idata, odata);
@@ -93,8 +93,8 @@ void THNN_(SpatialUpSamplingBilinear_updateGradInput)(
   const accreal rheight = linear_upsampling_compute_scale<accreal>(inputHeight, outputHeight, align_corners);
   const accreal rwidth = linear_upsampling_compute_scale<accreal>(inputWidth, outputWidth, align_corners);
   const int num_kernels = outputHeight * outputWidth;
-  const int num_threads =
-    THCState_getCurrentDeviceProperties(state)->maxThreadsPerBlock;
+  const int num_threads = 512;
+    // THCState_getCurrentDeviceProperties(state)->maxThreadsPerBlock;
   cudaStream_t stream = THCState_getCurrentStream(state);
   caffe_gpu_interp2_kernel_backward<real ,accreal> <<<THCCeilDiv(num_kernels, num_threads),
   num_threads, 0, stream>>>(num_kernels, rheight, rwidth, align_corners, data1, data2);
